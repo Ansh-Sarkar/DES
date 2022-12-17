@@ -42,29 +42,15 @@ class GenerateOTP(APIView):
     def post(self, request):
         try:
             data = request.data
-            user = User.objects.get(email = data['email'])
-            password = data['password']
-            if user.password != password:
-                return Response({
-                    'status': 400,
-                    'message': 'Invalid Username or Password',
-                    'data': 'Cannot generate OTP without password validation'
-                })
-            if not user.is_verified:
-                return Response({
-                    'status': 400,
-                    'message': 'User Not Verified',
-                    'data': 'Cannot generate OTP for unverified user'
-                })
-            else:
-                OTP_DICTIONARY[data['email']] = (
-                    send_otp_via_email(data['email']),
-                    datetime.now()
-                )
-                return Response({
-                    'status': 200,
-                    'message': 'OTP Generated Succesfully',
-                })
+
+            OTP_DICTIONARY[data['email']] = (
+                send_otp_via_email(data['email']),
+                datetime.now()
+            )
+            return Response({
+                'status': 200,
+                'message': 'OTP Generated Succesfully',
+            })
         except Exception as error:
             print(error)
             return Response({
@@ -77,20 +63,9 @@ class VerifyOTP(APIView):
     def post(self, request):
         try:
             data = request.data
-            print("chec")
             email = data['email']
-            print("check")
             otp = data['otp']
-            print(OTP_DICTIONARY)
             time_elapsed = (datetime.now() - OTP_DICTIONARY[email][1]).total_seconds()
-            print("check")
-            
-            print("email:", email)
-            print("otp:", otp)
-            print("time elapsed:", time_elapsed)
-
-            print((str(otp) != str(OTP_DICTIONARY[email][0])))
-            print(time_elapsed > OTP_EXPIRE_TIME)
             
             if time_elapsed > OTP_EXPIRE_TIME or str(otp) != str(OTP_DICTIONARY[email][0]):
                 OTP_DICTIONARY[email] = None
