@@ -22,7 +22,9 @@ from des.views import *
 
 urlpatterns = [
     path("test/", index),
-    path("register/", RegisterAPI.as_view()),
-    path("verify/", VerifyOTP.as_view()),
+    path("user/register/", RegisterUser.as_view()),
+    path("user/verify/", VerifyUser.as_view()),
+    path("otp/generate/", GenerateOTP.as_view()),
+    path("otp/verify/", VerifyOTP.as_view()),
     path("admin/", admin.site.urls),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
