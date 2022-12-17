@@ -42,14 +42,29 @@ class GenerateOTP(APIView):
     def post(self, request):
         try:
             data = request.data
-            OTP_DICTIONARY[data['email']] = (
-                send_otp_via_email(data['email']),
-                datetime.now()
-            )
-            return Response({
-                'status': 200,
-                'message': 'OTP Generated Succesfully',
-            })
+            user = User.objects.get(email = data['email'])
+            password = data['password']
+            if user.password != password:
+                return Response({
+                    'status': 400,
+                    'message': 'Invalid Username or Password',
+                    'data': 'Cannot generate OTP without password validation'
+                })
+            if not user.is_verified:
+                return Response({
+                    'status': 400,
+                    'message': 'User Not Verified',
+                    'data': 'Cannot generate OTP for unverified user'
+                })
+            else:
+                OTP_DICTIONARY[data['email']] = (
+                    send_otp_via_email(data['email']),
+                    datetime.now()
+                )
+                return Response({
+                    'status': 200,
+                    'message': 'OTP Generated Succesfully',
+                })
         except Exception as error:
             print(error)
             return Response({
