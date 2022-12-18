@@ -9,7 +9,7 @@ def send_otp_via_email(email):
     message = f"Your OTP is {otp}"
     email_from = settings.EMAIL_HOST
     send_mail(subject, message, email_from, [email])
-    user_obj = User.objects.get(email = email)
-    user_obj.otp = otp
-    user_obj.save()
+    # user_obj = User.objects.get(email = email)
+    # user_obj.otp = otp
+    # user_obj.save()
     return otp

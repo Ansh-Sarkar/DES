@@ -42,17 +42,20 @@ class GenerateOTP(APIView):
     def post(self, request):
         try:
             data = request.data
-
+            print("c1")
             OTP_DICTIONARY[data['email']] = (
                 send_otp_via_email(data['email']),
                 datetime.now()
             )
+            print('c2')
             return Response({
                 'status': 200,
                 'message': 'OTP Generated Succesfully',
             })
+        
         except Exception as error:
             print(error)
+            print('c3')
             return Response({
                 'status': 400,
                 'message': 'something went wrong',
